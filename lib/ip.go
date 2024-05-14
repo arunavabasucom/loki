@@ -1,34 +1,13 @@
 package lib
 
-import (
-	"fmt"
-	"net"
-	"os"
-)
+import "net"
 
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Fprintf(os.Stderr, "Usage: %s <hostname>\n", os.Args[0])
-		os.Exit(1)
-	}
 
-	hostname := os.Args[1]
-
-	// Perform DNS lookup
-	ips, err := net.LookupIP(hostname)
+// get te IP address of a domain
+func LookupIP(domain string) ([]net.IP, error) {
+	ips, err := net.LookupIP(domain)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
+		return nil, err
 	}
-
-	// Print results
-	fmt.Println("IP addresses for", hostname+":")
-	for _, ip := range ips {
-		fmt.Println(ip)
-	}
+	return ips, nil
 }
-
-
-
-
-

@@ -7,7 +7,7 @@
 go run main.go 
 
 # to add commands 
-cobra-cli add <command-name>
+cobra-cli add command
 
 ```
 

@@ -1,43 +1,52 @@
 package cmd
 
 import (
+	"fmt"
+	"net"
 	"os"
-
 	"github.com/spf13/cobra"
+
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "loki.projects.arunavabasu.com",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Modern CLI for DNS lookups",
+	Long: `loki.projects.arunavabasu.com is a modern CLI for DNS lookups.
+	This application allows you to perform DNS lookups for a given hostname.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 1 {
+			fmt.Println("Please provide a domain name")
+			return
+		}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+		domain := args[0]
+		ips, err := lookupIP(domain)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		fmt.Printf("IP addresses for %s:\n", domain)
+		for _, ip := range ips {
+			fmt.Println(ip)
+		}
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	err := rootCmd.Execute()
+func lookupIP(domain string) ([]net.IP, error) {
+	ips, err := net.LookupIP(domain)
 	if err != nil {
-		os.Exit(1)
+		return nil, err
 	}
+	return ips, nil
 }
 
+func Execute() {
+    if err := rootCmd.Execute(); err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+}
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.loki.projects.arunavabasu.com.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

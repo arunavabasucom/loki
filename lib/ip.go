@@ -3,7 +3,7 @@ package lib
 import "net"
 
 
-// get te IP address of a domain
+// LookupIP returns the IP addresses of a given domain
 func LookupIP(domain string) ([]net.IP, error) {
 	ips, err := net.LookupIP(domain)
 	if err != nil {
